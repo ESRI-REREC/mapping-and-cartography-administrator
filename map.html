@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" class="calcite-mode-light">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<title>Project Map · Mapping &amp; Cartography Administration</title>
+
+		<!-- Import map: resolve the Map Components' bare @arcgis/core imports to the
+		     same 4.31 CDN build. MUST come before any module script. -->
+		<script type="importmap">
+			{
+				"imports": {
+					"@arcgis/core/": "https://js.arcgis.com/4.31/@arcgis/core/"
+				}
+			}
+		</script>
+
+		<!-- Calcite Design System -->
+		<link
+			rel="stylesheet"
+			href="https://js.arcgis.com/calcite-components/2.13.2/calcite.css" />
+		<script
+			type="module"
+			src="https://js.arcgis.com/calcite-components/2.13.2/calcite.esm.js"></script>
+
+		<!-- ArcGIS Maps SDK theme -->
+		<link
+			rel="stylesheet"
+			href="https://js.arcgis.com/4.31/esri/themes/light/main.css" />
+
+		<!-- ArcGIS Map Components (provides <arcgis-map>, <arcgis-layer-list>, …). -->
+		<script
+			type="module"
+			src="https://js.arcgis.com/4.31/map-components/arcgis-map-components.esm.js"></script>
+
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+
+	<body>
+		<calcite-shell>
+			<arcgis-map id="map">
+				<arcgis-zoom position="top-right"></arcgis-zoom>
+				<arcgis-home position="top-right"></arcgis-home>
+				<arcgis-expand position="top-right" mode="floating" expanded>
+					<arcgis-layer-list></arcgis-layer-list>
+				</arcgis-expand>
+				<arcgis-expand position="top-right" mode="floating" icon="basemap">
+					<arcgis-basemap-gallery></arcgis-basemap-gallery>
+				</arcgis-expand>
+				<arcgis-expand position="top-right" mode="floating" icon="legend">
+					<arcgis-legend></arcgis-legend>
+				</arcgis-expand>
+			</arcgis-map>
+
+			<calcite-alert
+				id="app-alert"
+				auto-close
+				auto-close-duration="medium"
+				scale="m"
+				slot="alerts">
+				<div slot="title" id="alert-title"></div>
+				<div slot="message" id="alert-message"></div>
+			</calcite-alert>
+		</calcite-shell>
+
+		<!-- Closable survey info panel, floating over the map on the left. -->
+		<div id="info-card" class="info-card">
+			<calcite-panel id="info-panel" closable>
+				<calcite-action
+					slot="header-actions-start"
+					icon="chevron-left"
+					text="Back"
+					id="back-btn"></calcite-action>
+				<div slot="header-content" class="project-heading">
+					<span class="project-title" id="info-title">Loading…</span>
+					<span class="project-ref" id="info-ref"></span>
+				</div>
+				<calcite-chip
+					slot="header-actions-end"
+					id="status-chip"
+					scale="s"
+					kind="neutral"
+					appearance="outline"
+					hidden></calcite-chip>
+
+				<div class="tab-body">
+					<div id="info-sections"></div>
+				</div>
+
+				<!-- Uploaded documents (project attachments). -->
+				<calcite-block
+					heading="Documents"
+					icon-start="file-pdf"
+					open
+					collapsible>
+					<div id="attach-list" class="attach-list"></div>
+				</calcite-block>
+
+				<div class="panel-actions">
+					<calcite-button
+						width="full"
+						kind="brand"
+						appearance="solid"
+						icon-start="check-circle"
+						id="approve-btn">
+						Approve
+					</calcite-button>
+				</div>
+			</calcite-panel>
+		</div>
+
+		<!-- Shown when the info panel is closed, to reopen it. -->
+		<calcite-action
+			id="info-reopen"
+			class="info-reopen"
+			icon="information"
+			text="Project info"
+			text-enabled
+			scale="l"
+			hidden></calcite-action>
+
+		<calcite-scrim id="boot-scrim" loading></calcite-scrim>
+
+		<script src="config.js"></script>
+		<script type="module" src="map.js"></script>
+	</body>
+</html>
