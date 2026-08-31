@@ -21,7 +21,7 @@ window.APP_CONFIG = {
 	// recorded as the approver (design_approved_by). Reuses the same registered
 	// browser app as mapping-and-cartography (redirect URIs must include this
 	// app's serving origin).
-	oauthAppId: "pi2SVsyvcepvOgLt",
+	oauthAppId: "Bw7pOoS2ENJjQ6uj",
 
 	// Joined Projects × Facilities view (non-spatial). Source for the tables and
 	// the detail/map info panels. Its own `objectid` keys the map lookup.
@@ -76,8 +76,16 @@ window.APP_CONFIG = {
 			where: "implementation_status = 'Design' AND designed_by IS NULL",
 			columns: [
 				{ field: "project_name", label: "Project Name", width: 200 },
-				{ field: "project_reference_number", label: "Reference No.", width: 150 },
-				{ field: "survey_approved_by", label: "Survey Approved By", width: 170 },
+				{
+					field: "project_reference_number",
+					label: "Reference No.",
+					width: 150
+				},
+				{
+					field: "survey_approved_by",
+					label: "Survey Approved By",
+					width: 170
+				},
 				{ field: "county", label: "County", width: 130 },
 				{ field: "constituency", label: "Constituency", width: 150 },
 				{ field: "ward", label: "Ward", width: 150 }
@@ -94,7 +102,11 @@ window.APP_CONFIG = {
 				"design_approved_date IS NULL",
 			columns: [
 				{ field: "project_name", label: "Project Name", width: 200 },
-				{ field: "project_reference_number", label: "Reference No.", width: 150 },
+				{
+					field: "project_reference_number",
+					label: "Reference No.",
+					width: 150
+				},
 				{ field: "designed_by", label: "Designed By", width: 150 },
 				{ field: "county", label: "County", width: 130 },
 				{ field: "constituency", label: "Constituency", width: 150 },
@@ -111,7 +123,11 @@ window.APP_CONFIG = {
 				"design_approved_date IS NULL AND design_approved_by IS NULL",
 			columns: [
 				{ field: "project_name", label: "Project Name", width: 200 },
-				{ field: "project_reference_number", label: "Reference No.", width: 150 },
+				{
+					field: "project_reference_number",
+					label: "Reference No.",
+					width: 150
+				},
 				{ field: "designed_by", label: "Designed By", width: 150 },
 				{
 					field: "design_completion_date",
