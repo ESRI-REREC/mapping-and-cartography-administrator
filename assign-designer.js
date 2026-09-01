@@ -12,6 +12,7 @@
  * ------------------------------------------------------------------------- */
 
 import FeatureLayer from "https://js.arcgis.com/4.31/@arcgis/core/layers/FeatureLayer.js";
+import { getUsername } from "./oauth.js";
 
 const CFG = window.APP_CONFIG;
 const $ = (id) => document.getElementById(id);
@@ -19,6 +20,14 @@ const $ = (id) => document.getElementById(id);
 let designerOptions = []; // [{ code, name }]
 let assignTarget = null; // { oid, name, ref }
 let projectsLayer = null; // base electrification_projects layer (edit target)
+
+/** "YYYY-MM-DD" (or ISO) -> epoch ms (UTC), or null. */
+function toEpochMs(dateStr) {
+  if (!dateStr) return null;
+  const iso = String(dateStr).length <= 10 ? `${dateStr}T00:00:00Z` : dateStr;
+  const t = Date.parse(iso);
+  return Number.isNaN(t) ? null : t;
+}
 
 /** Wire the sheet and load the designer list. Call once. */
 export async function initAssignSheet() {
@@ -33,7 +42,7 @@ export async function initAssignSheet() {
 
 /** Populate the designer <select> from the designed_by coded-value domain. */
 async function loadDesigners() {
-  const layer = new FeatureLayer({ url: CFG.viewLayerUrl });
+  const layer = new FeatureLayer({ url: CFG.projectsLayerUrl });
   await layer.load();
   const field = layer.fields.find((f) => f.name === CFG.designerField);
   const coded = (field && field.domain && field.domain.codedValues) || [];
@@ -99,7 +108,16 @@ async function submitAssignment() {
 
     const result = await projectsLayer.applyEdits({
       updateFeatures: [
-        { attributes: { [projectsLayer.objectIdField]: oid, designed_by: designer } }
+        {
+          attributes: {
+            [projectsLayer.objectIdField]: oid,
+            designed_by: designer,
+            design_due_date: toEpochMs($("assign-due").value),
+            design_instructions: ($("assign-instructions").value || "").trim() || null,
+            design_assign_by: getUsername() || null,
+            design_assign_date: Date.now()
+          }
+        }
       ]
     });
     const r = (result.updateFeatureResults || [])[0];

@@ -11,8 +11,8 @@ approves them.
   (`implementation_status = 'Design' AND design_completion_date IS NOT NULL AND
   design_approved_date IS NULL`). Not scoped to a single user — an administrator
   reviews everyone's designs. Columns: project name, reference number, designed
-  by, design completed, county, constituency, ward. Text columns are filterable
-  (⋯ → Filter…). Clicking a row opens the map.
+  by, design completed. Text columns are filterable (⋯ → Filter…). Clicking a row
+  opens the map.
 - **`map.html` + `map.js`** — full-page map centred on the project's facility
   point, with the Survey & Design Assets layers (service symbology inherited from
   the portal item), a basemap gallery, a legend, and a left info panel
@@ -24,10 +24,11 @@ approves them.
 
 ## Data
 
-The table + info panels read the joined **`Electrification_Projects_and_Facilities`**
-view, keyed by the view's `objectid`. Approvals are written to the **base
-`electrification_projects`** feature, matched by `project_reference_number` — the
-view itself is read-only display.
+The tables + info panels read the **`electrification_projects`** layer directly.
+(The joined Projects × Facilities view was removed; county / constituency / ward
+are facility fields and are no longer shown.) Assignments (`designed_by`) and
+approvals (`design_approved_by`/`date`) are written to the same layer feature,
+keyed by its `objectid`; the designer picker reads the `designed_by` domain.
 
 ## Sign-in (OAuth)
 

@@ -114,7 +114,7 @@ function buildTableTemplate() {
 
 async function initTable() {
   ctrl.layer = new FeatureLayer({
-    url: CFG.viewLayerUrl,
+    url: CFG.projectsLayerUrl,
     outFields: ["*"],
     displayField: "project_name",
     definitionExpression: page.where

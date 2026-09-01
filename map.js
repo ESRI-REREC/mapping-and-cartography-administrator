@@ -49,7 +49,7 @@ function getMode() {
 }
 
 async function fetchProject(oid) {
-  const layer = new FeatureLayer({ url: CFG.viewLayerUrl, outFields: ["*"] });
+  const layer = new FeatureLayer({ url: CFG.projectsLayerUrl, outFields: ["*"] });
   await layer.load();
   layer.fields.forEach((f) => (fieldTypes[f.name] = f.type));
 

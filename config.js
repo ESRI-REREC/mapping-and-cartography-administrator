@@ -23,13 +23,9 @@ window.APP_CONFIG = {
 	// app's serving origin).
 	oauthAppId: "Bw7pOoS2ENJjQ6uj",
 
-	// Joined Projects × Facilities view (non-spatial). Source for the tables and
-	// the detail/map info panels. Its own `objectid` keys the map lookup.
-	viewLayerUrl:
-		"https://development.esriea.com/server/rest/services/Hosted/Electrification_Projects_and_Facilities/FeatureServer/0",
-
-	// Base Projects table. Assignments (designed_by) and approvals are written
-	// here (matched by project_reference_number).
+	// Base Projects table — source for the tables + detail/map panels, and the
+	// target for assignments/approvals. (The joined view was removed; county /
+	// constituency / ward are facility fields and no longer shown here.)
 	projectsLayerUrl:
 		"https://development.esriea.com/server/rest/services/Hosted/electrification_projects/FeatureServer/0",
 
@@ -85,11 +81,7 @@ window.APP_CONFIG = {
 					field: "survey_approved_by",
 					label: "Survey Approved By",
 					width: 170
-				},
-				{ field: "county", label: "County", width: 130 },
-				{ field: "constituency", label: "Constituency", width: 150 },
-				{ field: "ward", label: "Ward", width: 150 }
-			]
+				}			]
 		},
 		{
 			id: "in-progress",
@@ -107,11 +99,7 @@ window.APP_CONFIG = {
 					label: "Reference No.",
 					width: 150
 				},
-				{ field: "designed_by", label: "Designed By", width: 150 },
-				{ field: "county", label: "County", width: 130 },
-				{ field: "constituency", label: "Constituency", width: 150 },
-				{ field: "ward", label: "Ward", width: 150 }
-			]
+				{ field: "designed_by", label: "Designed By", width: 150 }			]
 		},
 		{
 			id: "completed",
@@ -135,11 +123,7 @@ window.APP_CONFIG = {
 					width: 150,
 					filterable: false,
 					dateFormat: "short-date"
-				},
-				{ field: "county", label: "County", width: 130 },
-				{ field: "constituency", label: "Constituency", width: 150 },
-				{ field: "ward", label: "Ward", width: 150 }
-			]
+				}			]
 		}
 	],
 
@@ -173,15 +157,6 @@ window.APP_CONFIG = {
 				{ field: "design_completion_date", label: "Design Completion Date" },
 				{ field: "design_approved_by", label: "Design Approved By" },
 				{ field: "design_approved_date", label: "Design Approved Date" }
-			]
-		},
-		{
-			title: "Location",
-			icon: "pin",
-			fields: [
-				{ field: "county", label: "County" },
-				{ field: "constituency", label: "Constituency" },
-				{ field: "ward", label: "Ward" }
 			]
 		}
 	]
