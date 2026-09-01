@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
- * map.js — Design-approval project map view (ES module).
+ * map.js — Cartography-approval project map view (ES module).
  *
  * Opened from a review-list row (map.html?oid=<view objectid>). Shows a
  * full-page map with:
@@ -7,9 +7,9 @@
  *     plus the uploaded design documents (attachments) for review;
  *   • a basemap gallery + every Survey_and_Design_Assets sublayer (layer list);
  *   • the view centred on the Facilities point whose reference_number matches;
- *   • an "Approve" button that sets design_approved_by (the signed-in user) +
- *     design_approved_date on the base electrification_projects feature, then
- *     returns to the list.
+ *   • an "Approve" button that sets cartography_approved_by (the signed-in user)
+ *     + cartography_approval_date on the base electrification_projects feature and
+ *     advances it to the next stage (Wayleave Acquisition), then returns to the list.
  *
  * The user signs in with their portal account (oauth.js); the SDK attaches their
  * token to every secured request.
@@ -30,7 +30,7 @@ const fieldTypes = {};
 let attrs = null; // the joined view row for this project
 let projectsLayer = null; // base electrification_projects layer (edit target)
 let projectOid = null; // base project objectid (approval target)
-let approver = null; // signed-in username, recorded as design_approved_by
+let approver = null; // signed-in username, recorded as cartography_approved_by
 let facilityGeometry = null; // matched facility point
 
 /* ------------------------------------------------------------------------ *
@@ -182,9 +182,11 @@ async function loadAttachments() {
  * Approve design
  * ------------------------------------------------------------------------ */
 
-/** Approve the completed design: set design_approved_by (the signed-in user) +
- * design_approved_date on the base electrification_projects record, alert, then
- * return to the list (the row drops out — the table shows only unapproved). */
+/** Approve the completed cartography: set cartography_approved_by (the signed-in
+ * user) + cartography_approval_date on the base electrification_projects record
+ * AND advance the project to the next stage (implementation_status =
+ * config.nextStatus, "Wayleave Acquisition"), alert, then return to the list
+ * (the row drops out — it is no longer in Cartography). */
 async function approveDesign() {
   if (!projectsLayer || projectOid == null) {
     return alertUser("No project record", "Could not find the project to update.", "danger");
@@ -197,8 +199,10 @@ async function approveDesign() {
         {
           attributes: {
             [projectsLayer.objectIdField]: projectOid,
-            design_approved_by: approver,
-            design_approved_date: Date.now()
+            cartography_approved_by: approver,
+            cartography_approval_date: Date.now(),
+            // Cartography sign-off advances the project to the next stage.
+            implementation_status: CFG.nextStatus || "Wayleave Acquisition"
           }
         }
       ]
@@ -207,7 +211,7 @@ async function approveDesign() {
     if (!r || r.error) {
       throw new Error((r && r.error && r.error.message) || "update rejected");
     }
-    alertUser("Design approved", `${attrs.project_name} approved by ${approver}.`, "success");
+    alertUser("Cartography approved", `${attrs.project_name} approved by ${approver}.`, "success");
     setTimeout(() => (window.location.href = "index.html"), 1200);
   } catch (err) {
     alertUser("Approval failed", err.message, "danger");

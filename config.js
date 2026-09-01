@@ -1,15 +1,16 @@
 /* ---------------------------------------------------------------------------
  * config.js — settings for the Mapping & Cartography Administration UI.
  *
- * The design workflow admin for the electrification pipeline. Three pages share
- * one engine (page.js):
- *   • Unassigned  — Design stage, no designer yet. Row → assign a designer.
- *   • In progress — designer assigned, design not completed/approved. Row → map
+ * The cartography workflow admin for the electrification pipeline. Three pages
+ * share one engine (page.js):
+ *   • Unassigned  — Cartography stage, no cartographer yet. Row → assign one.
+ *   • In progress — cartographer assigned, not completed/approved. Row → map
  *                   (read-only, no action).
- *   • Completed   — design completed, awaiting approval. Row → map + Approve.
+ *   • Completed   — cartography completed, awaiting approval. Row → map + Approve.
  *
- * The table + detail/map panels read the joined Projects × Facilities view;
+ * The table + detail/map panels read the electrification_projects layer directly;
  * assignments/approvals are written to the base electrification_projects layer.
+ * Approving advances the project to the next stage (Wayleave Acquisition).
  * The user signs in with their own portal account (oauth.js).
  * ------------------------------------------------------------------------- */
 
@@ -18,9 +19,9 @@ window.APP_CONFIG = {
 	serverRestUrl: "https://development.esriea.com/server/rest/services",
 
 	// OAuth 2.0 app id (client_id) for named-user sign-in. The signed-in user is
-	// recorded as the approver (design_approved_by). Reuses the same registered
-	// browser app as mapping-and-cartography (redirect URIs must include this
-	// app's serving origin).
+	// recorded as the approver (cartography_approved_by). Reuses the same
+	// registered browser app as mapping-and-cartography (redirect URIs must
+	// include this app's serving origin).
 	oauthAppId: "Bw7pOoS2ENJjQ6uj",
 
 	// Base Projects table — source for the tables + detail/map panels, and the
@@ -48,9 +49,12 @@ window.APP_CONFIG = {
 	// app above.
 	serverUrl: "https://dev-server-rerec-poc.vercel.app",
 
-	// The designer <select> in the Unassigned assign sheet is populated from this
-	// field's coded-value domain (codes are portal usernames).
-	designerField: "designed_by",
+	// The cartographer <select> in the Unassigned assign sheet is populated from
+	// this field's coded-value domain (codes are portal usernames).
+	designerField: "cartography_by",
+
+	// The stage a project advances to once its cartography is approved.
+	nextStatus: "Wayleave Acquisition",
 
 	// Map view settings (map.html).
 	mapBasemap: "gray-vector", // Light Gray Canvas (vector)
@@ -68,8 +72,8 @@ window.APP_CONFIG = {
 			id: "unassigned",
 			label: "Unassigned",
 			action: "assign",
-			// Reached the Design stage but no designer assigned yet.
-			where: "implementation_status = 'Design' AND designed_by IS NULL",
+			// Reached the Cartography stage but no cartographer assigned yet.
+			where: "implementation_status = 'Cartography' AND cartography_by IS NULL",
 			columns: [
 				{ field: "project_name", label: "Project Name", width: 200 },
 				{
@@ -87,11 +91,11 @@ window.APP_CONFIG = {
 			id: "in-progress",
 			label: "In progress",
 			action: "view", // open the map, no action
-			// Designer assigned; design not completed or approved.
+			// Cartographer assigned; cartography not completed or approved.
 			where:
-				"implementation_status = 'Design' AND designed_by IS NOT NULL AND " +
-				"design_completion_date IS NULL AND design_approved_by IS NULL AND " +
-				"design_approved_date IS NULL",
+				"implementation_status = 'Cartography' AND cartography_by IS NOT NULL AND " +
+				"cartography_completion_date IS NULL AND cartography_approved_by IS NULL AND " +
+				"cartography_approval_date IS NULL",
 			columns: [
 				{ field: "project_name", label: "Project Name", width: 200 },
 				{
@@ -99,16 +103,16 @@ window.APP_CONFIG = {
 					label: "Reference No.",
 					width: 150
 				},
-				{ field: "designed_by", label: "Designed By", width: 150 }			]
+				{ field: "cartography_by", label: "Cartographer", width: 150 }			]
 		},
 		{
 			id: "completed",
 			label: "Completed",
 			action: "approve", // open the map + Approve
-			// Design completed, awaiting approval.
+			// Cartography completed, awaiting approval.
 			where:
-				"implementation_status = 'Design' AND design_completion_date IS NOT NULL AND " +
-				"design_approved_date IS NULL AND design_approved_by IS NULL",
+				"implementation_status = 'Cartography' AND cartography_completion_date IS NOT NULL AND " +
+				"cartography_approval_date IS NULL AND cartography_approved_by IS NULL",
 			columns: [
 				{ field: "project_name", label: "Project Name", width: 200 },
 				{
@@ -116,11 +120,11 @@ window.APP_CONFIG = {
 					label: "Reference No.",
 					width: 150
 				},
-				{ field: "designed_by", label: "Designed By", width: 150 },
+				{ field: "cartography_by", label: "Cartographer", width: 150 },
 				{
-					field: "design_completion_date",
-					label: "Design Completed",
-					width: 150,
+					field: "cartography_completion_date",
+					label: "Cartography Completed",
+					width: 170,
 					filterable: false,
 					dateFormat: "short-date"
 				}			]
@@ -150,13 +154,13 @@ window.APP_CONFIG = {
 			]
 		},
 		{
-			title: "Design Details",
-			icon: "pencil",
+			title: "Cartography Details",
+			icon: "map",
 			fields: [
-				{ field: "designed_by", label: "Designed By" },
-				{ field: "design_completion_date", label: "Design Completion Date" },
-				{ field: "design_approved_by", label: "Design Approved By" },
-				{ field: "design_approved_date", label: "Design Approved Date" }
+				{ field: "cartography_by", label: "Cartographer" },
+				{ field: "cartography_completion_date", label: "Cartography Completion Date" },
+				{ field: "cartography_approved_by", label: "Cartography Approved By" },
+				{ field: "cartography_approval_date", label: "Cartography Approved Date" }
 			]
 		}
 	]

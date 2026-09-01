@@ -1,14 +1,12 @@
 /* ---------------------------------------------------------------------------
- * assign-designer.js — the "assign designer" sheet (Unassigned page).
+ * assign-designer.js — the "assign cartographer" sheet (Unassigned page).
  *
- * Opened when an Unassigned row is clicked. The designer <select> is populated
- * from the designed_by coded-value domain (codes are portal usernames). On
- * submit it writes designed_by to the base electrification_projects record
- * (matched by project_reference_number) and reloads the page.
- *
- * NOTE: the due-date and instructions fields are collected for the workflow but
- * NOT persisted — the projects layer has no design due-date / instructions
- * field. Only designed_by is written. (Add fields + writes here if needed.)
+ * Opened when an Unassigned row is clicked. The cartographer <select> is
+ * populated from the cartography_by coded-value domain (codes are portal
+ * usernames). On submit it writes cartography_by plus the due date, instructions,
+ * assigner (cartography_assigned_by) and assign date to the base
+ * electrification_projects record (matched by project_reference_number) and
+ * reloads the page.
  * ------------------------------------------------------------------------- */
 
 import FeatureLayer from "https://js.arcgis.com/4.31/@arcgis/core/layers/FeatureLayer.js";
@@ -40,7 +38,7 @@ export async function initAssignSheet() {
   await loadDesigners();
 }
 
-/** Populate the designer <select> from the designed_by coded-value domain. */
+/** Populate the cartographer <select> from the cartography_by coded-value domain. */
 async function loadDesigners() {
   const layer = new FeatureLayer({ url: CFG.projectsLayerUrl });
   await layer.load();
@@ -50,7 +48,7 @@ async function loadDesigners() {
 
   const select = $("assign-designer");
   select.innerHTML = "";
-  select.appendChild(makeOption("", "Select a designer…"));
+  select.appendChild(makeOption("", "Select a cartographer…"));
   designerOptions.forEach((d) => select.appendChild(makeOption(d.code, d.name)));
 }
 
@@ -81,11 +79,11 @@ export function openAssignSheet(attrs) {
   $("assign-sheet").open = true;
 }
 
-/** Validate (designer required) and write designed_by, then reload the page. */
+/** Validate (cartographer required) and write cartography_by, then reload. */
 async function submitAssignment() {
   const designer = $("assign-designer").value;
   if (!designer) {
-    return alertUser("Designer required", "Please select a designer to assign.", "warning");
+    return alertUser("Cartographer required", "Please select a cartographer to assign.", "warning");
   }
   if (!assignTarget || !assignTarget.ref) {
     return alertUser("Missing reference", "This project has no reference number to match.", "danger");
@@ -94,7 +92,7 @@ async function submitAssignment() {
   const submit = $("assign-submit");
   submit.loading = true;
   try {
-    // Resolve the base project objectid from the reference, then set designed_by.
+    // Resolve the base project objectid from the reference, then set cartography_by.
     await projectsLayer.load();
     const q = await projectsLayer.queryFeatures({
       where: `project_reference_number = '${assignTarget.ref.replace(/'/g, "''")}'`,
@@ -111,11 +109,11 @@ async function submitAssignment() {
         {
           attributes: {
             [projectsLayer.objectIdField]: oid,
-            designed_by: designer,
-            design_due_date: toEpochMs($("assign-due").value),
-            design_instructions: ($("assign-instructions").value || "").trim() || null,
-            design_assign_by: getUsername() || null,
-            design_assign_date: Date.now()
+            cartography_by: designer,
+            cartography_due_date: toEpochMs($("assign-due").value),
+            cartography_instructions: ($("assign-instructions").value || "").trim() || null,
+            cartography_assigned_by: getUsername() || null,
+            cartography_assign_date: Date.now()
           }
         }
       ]
@@ -127,7 +125,7 @@ async function submitAssignment() {
 
     $("assign-sheet").open = false;
     alertUser(
-      "Designer assigned",
+      "Cartographer assigned",
       `${assignTarget.name} assigned to ${designerName(designer)}.`,
       "success"
     );

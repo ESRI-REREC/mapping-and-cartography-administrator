@@ -3,7 +3,7 @@
  *
  * Replaces the shared token-server auth for this app: the user signs in with
  * their own ArcGIS portal account (OAuth 2.0), so we know who they are and can
- * scope the Design table to their tasks (designed_by = <username>). The SDK's
+ * scope the Cartography table to their tasks (cartography_by = <username>). The SDK's
  * IdentityManager then attaches the user's token to every secured request
  * (reads + edits), and — because OAuth tokens are not referer-bound — this
  * works from any registered origin.
