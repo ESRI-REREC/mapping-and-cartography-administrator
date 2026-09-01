@@ -158,6 +158,10 @@ window.APP_CONFIG = {
 			icon: "map",
 			fields: [
 				{ field: "cartography_by", label: "Cartographer" },
+				{ field: "cartography_assigned_by", label: "Assigned By" },
+				{ field: "cartography_assign_date", label: "Assigned Date" },
+				{ field: "cartography_due_date", label: "Due Date" },
+				{ field: "cartography_instructions", label: "Instructions" },
 				{ field: "cartography_completion_date", label: "Cartography Completion Date" },
 				{ field: "cartography_approved_by", label: "Cartography Approved By" },
 				{ field: "cartography_approval_date", label: "Cartography Approved Date" }
