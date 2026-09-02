@@ -85,6 +85,15 @@ window.APP_CONFIG = {
 					field: "survey_approved_by",
 					label: "Survey Approved By",
 					width: 170
+				},
+				{ field: "designed_by", label: "Design Engineer", width: 150 },
+				{ field: "design_approved_by", label: "Design Approved By", width: 170 },
+				{
+					field: "design_approved_date",
+					label: "Design Approved Date",
+					width: 160,
+					filterable: false,
+					dateFormat: "short-date"
 				}			]
 		},
 		{
@@ -103,7 +112,16 @@ window.APP_CONFIG = {
 					label: "Reference No.",
 					width: 150
 				},
-				{ field: "cartography_by", label: "Cartographer", width: 150 }			]
+				{ field: "cartography_by", label: "Cartographer", width: 150 },
+				{ field: "designed_by", label: "Design Engineer", width: 150 },
+				{ field: "design_approved_by", label: "Design Approved By", width: 170 },
+				{
+					field: "design_approved_date",
+					label: "Design Approved Date",
+					width: 160,
+					filterable: false,
+					dateFormat: "short-date"
+				}			]
 		},
 		{
 			id: "completed",
@@ -125,6 +143,15 @@ window.APP_CONFIG = {
 					field: "cartography_completion_date",
 					label: "Cartography Completed",
 					width: 170,
+					filterable: false,
+					dateFormat: "short-date"
+				},
+				{ field: "designed_by", label: "Design Engineer", width: 150 },
+				{ field: "design_approved_by", label: "Design Approved By", width: 170 },
+				{
+					field: "design_approved_date",
+					label: "Design Approved Date",
+					width: 160,
 					filterable: false,
 					dateFormat: "short-date"
 				}			]
